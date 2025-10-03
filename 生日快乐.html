@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎂生日快乐🎂</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #9f8189, #f3acb6, #ffcad4,#fee5d7,#fceee6);
+            background-size: 400% 400%;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+            animation: gradientBG 15s ease infinite;
+        }
+        
+        .container {
+            text-align: center;
+            position: relative;
+            z-index: 20;
+        }
+        
+        #contentToWrite {
+            color: #ff4d94;
+            font-size: 60px;
+            font-weight: bold;
+            text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+            animation: bounce 2s infinite, pulse 3s infinite;
+            padding: 25px 40px;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 20px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 25px rgba(255, 105, 180, 0.3);
+            margin-bottom: 30px;
+        }
+        
+        .subtitle {
+            color: #e45252;
+            font-size: 24px;
+            margin-top: 20px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        #pinkboard {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        /* 爱心飘落动画 */
+        .heart {
+            position: absolute;
+            pointer-events: none;
+            animation: fall 6s linear forwards;
+            z-index: 2;
+            font-size: 24px;
+            color: #ff4d94;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+        
+        /* 动画关键帧 */
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-25px);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 10px 25px rgba(255, 105, 180, 0.3);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 15px 35px rgba(255, 105, 180, 0.5);
+            }
+        }
+        
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) translateX(calc((var(--random) - 0.5) * 200px)) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            #contentToWrite {
+                font-size: 40px;
+                padding: 20px 30px;
+            }
+            
+            .subtitle {
+                font-size: 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            #contentToWrite {
+                font-size: 32px;
+                padding: 15px 25px;
+            }
+            
+            .subtitle {
+                font-size: 18px;
+            }
+        }
+        
+        .instructions {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 16px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="contentToWrite">黄琬婷</div>
+        <div class="subtitle">🎂生日快乐🎂</div>
+    </div>
+    <canvas id="pinkboard"></canvas>
+    
+    <div class="instructions">按空格或点击屏幕任意位置有惊喜哦</div>
+    
+    <script>
+        // 爱心粒子动画
+        document.addEventListener("DOMContentLoaded", function() {
+            const pinkboard = document.getElementById('pinkboard');
+            const ctx = pinkboard.getContext('2d');
+            
+            // 设置画布尺寸
+            function resizeCanvas() {
+                pinkboard.width = window.innerWidth;
+                pinkboard.height = window.innerHeight;
+            }
+            
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+            
+            // 爱心粒子参数
+            const particles = [];
+            const particleCount = 80;
+            const heartShapes = ['❤', '🎂','💖', '💗', '💓', '💞', '💕','🌸'];
+            
+            // 创建爱心粒子
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * pinkboard.width,
+                    y: Math.random() * pinkboard.height,
+                    size: Math.random() * 25 + 15,
+                    speed: Math.random() * 2 + 1,
+                    text: heartShapes[Math.floor(Math.random() * heartShapes.length)],
+                    angle: Math.random() * 360,
+                    swing: Math.random() * 2 - 1
+                });
+            }
+            
+            // 动画循环
+            function animate() {
+                ctx.clearRect(0, 0, pinkboard.width, pinkboard.height);
+                
+                // 绘制背景光晕效果
+                const gradient = ctx.createRadialGradient(
+                    pinkboard.width/2, pinkboard.height/2, 0,
+                    pinkboard.width/2, pinkboard.height/2, Math.max(pinkboard.width, pinkboard.height)
+                );
+                gradient.addColorStop(0, 'rgba(255, 230, 240, 0.2)');
+                gradient.addColorStop(1, 'rgba(255, 182, 185, 0)');
+                
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, pinkboard.width, pinkboard.height);
+                
+                particles.forEach(particle => {
+                    // 更新位置
+                    particle.y += particle.speed;
+                    particle.angle += 0.02;
+                    particle.x += Math.sin(particle.angle * 0.1) * 0.5;
+                    
+                    // 如果粒子超出屏幕底部，重置到顶部
+                    if (particle.y > pinkboard.height) {
+                        particle.y = -30;
+                        particle.x = Math.random() * pinkboard.width;
+                    }
+                    
+                    // 绘制爱心
+                    ctx.save();
+                    ctx.translate(particle.x, particle.y);
+                    ctx.rotate(particle.angle);
+                    
+                    // 添加光晕效果
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = 'rgba(255, 255, 255, 0.7)';
+                    
+                    ctx.font = `${particle.size}px Arial`;
+                    ctx.fillStyle = `rgba(255, ${105 + Math.sin(particle.angle)*50}, 180, 0.8)`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(particle.text, 0, 0);
+                    ctx.restore();
+                });
+                
+                requestAnimationFrame(animate);
+            }
+            
+            animate();
+            
+            // 添加点击爱心效果
+            document.body.addEventListener('click', function(e) {
+                createHeart(e.clientX, e.clientY);
+            });
+            
+            // 添加触摸事件支持
+            document.body.addEventListener('touchstart', function(e) {
+                createHeart(e.touches[0].clientX, e.touches[0].clientY);
+            });
+            
+            function createHeart(x, y) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '❤';
+                heart.style.left = `${x}px`;
+                heart.style.top = `${y}px`;
+                
+                // 添加随机变化
+                const randomSize = Math.random() * 20 + 16;
+                const randomDelay = Math.random() * 2;
+                const randomX = Math.random();
+                
+                heart.style.fontSize = `${randomSize}px`;
+                heart.style.animationDelay = `${randomDelay}s`;
+                heart.style.setProperty('--random', randomX);
+                
+                document.body.appendChild(heart);
+                
+                // 动画结束后移除元素
+                setTimeout(() => {
+                    heart.remove();
+                }, 6000);
+            }
+            
+            // 随机添加一些飘落的爱心
+            setInterval(() => {
+                createHeart(Math.random() * window.innerWidth, -30);
+            }, 300);
+            
+            // 添加键盘控制
+            document.addEventListener('keydown', function(e) {
+                if (e.key === ' ') {
+                    // 空格键添加多个爱心
+                    for (let i = 0; i < 5; i++) {
+                        setTimeout(() => {
+                            createHeart(Math.random() * window.innerWidth, -30);
+                        }, i * 100);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
